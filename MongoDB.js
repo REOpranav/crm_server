@@ -14,18 +14,42 @@ const connectToDB = async () => {
     return database;
 }
 
-const getDataFromDB = async (collectionName) => {
+const getDataFromDB = async (collectionName) => { // getting total data
     try {
-        console.log(collectionName);
         const getDatabaseCollection = await connectToDB()
         const collection = getDatabaseCollection?.collection(collectionName)
-        const data = await collection.find({}).toArray()
+        const data = await collection?.find({}).toArray()
         return data
     } catch (err) {
-        console.error('Error retrieving data:', error);
+        console.error('Error retrieving data:', err);
         throw err;
     }
-
 };
 
-module.exports = { getDataFromDB }
+const getParticularclient = async (collectionName, clientID) => { // getting total data
+    try {
+        const getDatabaseCollection = await connectToDB()
+        const collection = getDatabaseCollection?.collection(collectionName)
+        const data = await collection?.find({ "id": `${clientID}` }).toArray()
+        return data
+    } catch (err) {
+        console.error('Error retrieving data:', err);
+        throw err;
+    }
+};
+
+const deleteLead = async (collectionName, clientID) => { // delete data from leads
+    try {
+        const getDatabaseCollection = await connectToDB()
+        const collection = getDatabaseCollection?.collection(collectionName)
+        const data = await collection?.deleteOne({ "id": `${clientID}` })
+        return data
+    } catch (err) {
+        console.error('Error retrieving data:', err);
+        throw err;
+    }
+};
+
+
+
+module.exports = { getDataFromDB, getParticularclient, deleteLead }

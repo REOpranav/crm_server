@@ -1,4 +1,4 @@
-const { getDataFromDB } = require('./MongoDB')
+const { getDataFromDB, getParticularclient, deleteLead } = require('./MongoDB')
 const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
@@ -8,9 +8,10 @@ require('dotenv').config()
 
 app.use(express.json()) // Parse incoming JSON
 app.use(cors())
-app.use('/mongoDB/contacts', async (req, res) => {
+
+app.use('/mongoDB/leads', (req, res) => {
     try {
-        getDataFromDB('contacts').then((value) => {            
+        getDataFromDB('leads').then((value) => {
             res.json(value)
         })
     } catch (error) {
@@ -21,9 +22,37 @@ app.use('/mongoDB/contacts', async (req, res) => {
     }
 })
 
-app.use('/mongoDB/leads', (req, res) => {
+app.use('/leads/find', async (req, res) => {
+    let { client_ID } = req.query
     try {
-        getDataFromDB('leads').then((value) => {
+        getParticularclient('leads', `${client_ID}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/leads/delete', async (req, res) => {
+    let { id } = req.body
+    try {
+        deleteLead('leads', `${id}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/mongoDB/contacts', async (req, res) => {
+    try {
+        getDataFromDB('contacts').then((value) => {
             res.json(value)
         })
     } catch (error) {
