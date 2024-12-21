@@ -24,7 +24,7 @@ app.use('/mongoDB/leads', (req, res) => { // fetch all lead
 })
 
 app.use('/mongoDB/insertLead', async (req, res) => { // insert one lead
-    const indertingData = req.body
+    const { indertingData } = req.body
     try {
         insertOneClient('leads', Array.isArray(indertingData) ? indertingData : [indertingData]).then((value) => {
             res.json(value)
@@ -81,8 +81,6 @@ app.use('/mongoDB/contacts', async (req, res) => { // fetch all contact
 
 app.use('/mongoDB/insertContact', async (req, res) => { // insert one contact
     const { indertingData } = req.body
-    console.log(indertingData);
-    
     try {
         insertOneClient('contacts', Array.isArray(indertingData) ? indertingData : [indertingData]).then((value) => {
             res.json(value)
