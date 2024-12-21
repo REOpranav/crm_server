@@ -19,6 +19,8 @@ const getDataFromDB = async (collectionName) => { // getting total data
         const getDatabaseCollection = await connectToDB()
         const collection = getDatabaseCollection?.collection(collectionName)
         const data = await collection?.find({}).toArray()
+        console.log(data);
+        
         return data
     } catch (err) {
         console.error('Error retrieving data:', err);
@@ -26,7 +28,19 @@ const getDataFromDB = async (collectionName) => { // getting total data
     }
 };
 
-const getParticularclient = async (collectionName, clientID) => { // getting total data
+const insertOneClient = async (collectionName, insertingData) => { // inserting the data
+    try {
+        const getDatabaseCollection = await connectToDB()
+        const collection = getDatabaseCollection?.collection(collectionName)
+        const data = await collection?.insertMany(insertingData)
+        return data
+    } catch (err) {
+        console.error('Error retrieving data:', err);
+        throw err;
+    }
+};
+
+const getParticularclient = async (collectionName, clientID) => { // getting particular data
     try {
         const getDatabaseCollection = await connectToDB()
         const collection = getDatabaseCollection?.collection(collectionName)
@@ -38,11 +52,13 @@ const getParticularclient = async (collectionName, clientID) => { // getting tot
     }
 };
 
-const deleteLead = async (collectionName, clientID) => { // delete data from leads
+const deleteClient = async (collectionName, clientID) => { // delete data from leads
     try {
         const getDatabaseCollection = await connectToDB()
         const collection = getDatabaseCollection?.collection(collectionName)
         const data = await collection?.deleteOne({ "id": `${clientID}` })
+        console.log(data);
+
         return data
     } catch (err) {
         console.error('Error retrieving data:', err);
@@ -50,6 +66,4 @@ const deleteLead = async (collectionName, clientID) => { // delete data from lea
     }
 };
 
-
-
-module.exports = { getDataFromDB, getParticularclient, deleteLead }
+module.exports = { getDataFromDB, getParticularclient, deleteClient, insertOneClient }

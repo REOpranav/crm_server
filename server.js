@@ -1,4 +1,4 @@
-const { getDataFromDB, getParticularclient, deleteLead } = require('./MongoDB')
+const { getDataFromDB, getParticularclient, deleteClient, insertOneClient } = require('./MongoDB')
 const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
@@ -9,7 +9,8 @@ require('dotenv').config()
 app.use(express.json()) // Parse incoming JSON
 app.use(cors())
 
-app.use('/mongoDB/leads', (req, res) => {
+// lead module
+app.use('/mongoDB/leads', (req, res) => { // fetch all lead
     try {
         getDataFromDB('leads').then((value) => {
             res.json(value)
@@ -22,7 +23,7 @@ app.use('/mongoDB/leads', (req, res) => {
     }
 })
 
-app.use('/leads/find', async (req, res) => {
+app.use('/leads/find', async (req, res) => { // finding particular lead 
     let { client_ID } = req.query
     try {
         getParticularclient('leads', `${client_ID}`).then((value) => {
@@ -36,10 +37,11 @@ app.use('/leads/find', async (req, res) => {
     }
 })
 
-app.use('/leads/delete', async (req, res) => {
+app.use('/leads/delete', async (req, res) => { // delete particualar lead delete
     let { id } = req.body
+    console.log(id);
     try {
-        deleteLead('leads', `${id}`).then((value) => {
+        deleteClient('leads', `${id}`).then((value) => {
             res.json(value)
         })
     } catch (error) {
@@ -50,7 +52,8 @@ app.use('/leads/delete', async (req, res) => {
     }
 })
 
-app.use('/mongoDB/contacts', async (req, res) => {
+// contact module
+app.use('/mongoDB/contacts', async (req, res) => { // fetch all contact
     try {
         getDataFromDB('contacts').then((value) => {
             res.json(value)
@@ -63,8 +66,50 @@ app.use('/mongoDB/contacts', async (req, res) => {
     }
 })
 
+app.use('/mongoDB/insertContact', async (req, res) => { // insert one contact
+    const { indertingData } = req.body
+    try {
+        insertOneClient('contacts', indertingData).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
 
-app.use('/mongoDB/accounts ', async (req, res) => {
+app.use('/contacts/find', async (req, res) => { // finding particular contact
+    let { client_ID } = req.query
+    try {
+        getParticularclient('contacts', `${client_ID}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/contact/delete', async (req, res) => { // delete particualar contact delete
+    let { id } = req.body
+    try {
+        deleteClient('contacts', `${id}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+// account module
+app.use('/mongoDB/accounts', async (req, res) => { // get all account data
     try {
         getDataFromDB('accounts').then((value) => {
             res.json(value)
@@ -76,6 +121,35 @@ app.use('/mongoDB/accounts ', async (req, res) => {
         });
     }
 })
+
+app.use('/mongoDB/insertAccount', async (req, res) => { // insert one account data
+    const { indertingData } = req.body
+    try {
+        insertOneClient('accounts', indertingData).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/account/find', async (req, res) => { // finding particular account
+    let { client_ID } = req.query    
+    try {
+        getParticularclient('accounts', `${client_ID}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
 
 // this all are meeting intergration code
 // this code for getting the access token
