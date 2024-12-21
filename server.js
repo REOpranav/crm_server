@@ -23,6 +23,21 @@ app.use('/mongoDB/leads', (req, res) => { // fetch all lead
     }
 })
 
+app.use('/mongoDB/insertLead', async (req, res) => { // insert one lead
+    const indertingData = req.body
+    try {
+        insertOneClient('leads', [indertingData]).then((value) => {
+            console.log(value);
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
 app.use('/leads/find', async (req, res) => { // finding particular lead 
     let { client_ID } = req.query
     try {
@@ -69,7 +84,7 @@ app.use('/mongoDB/contacts', async (req, res) => { // fetch all contact
 app.use('/mongoDB/insertContact', async (req, res) => { // insert one contact
     const { indertingData } = req.body
     try {
-        insertOneClient('contacts', indertingData).then((value) => {
+        insertOneClient('contacts', Array.isArray(indertingData) ? indertingData : [indertingData]).then((value) => {
             res.json(value)
         })
     } catch (error) {
@@ -137,7 +152,7 @@ app.use('/mongoDB/insertAccount', async (req, res) => { // insert one account da
 })
 
 app.use('/account/find', async (req, res) => { // finding particular account
-    let { client_ID } = req.query    
+    let { client_ID } = req.query
     try {
         getParticularclient('accounts', `${client_ID}`).then((value) => {
             res.json(value)
