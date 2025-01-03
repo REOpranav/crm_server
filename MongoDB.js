@@ -19,8 +19,6 @@ const getDataFromDB = async (collectionName) => { // getting total data
         const getDatabaseCollection = await connectToDB()
         const collection = getDatabaseCollection?.collection(collectionName)
         const data = await collection?.find({}).toArray()
-        console.log(data);
-        
         return data
     } catch (err) {
         console.error('Error retrieving data:', err);

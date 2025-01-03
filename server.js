@@ -163,6 +163,64 @@ app.use('/account/find', async (req, res) => { // finding particular account
     }
 })
 
+// call Logs
+app.use('/client/calllogs', async (req, res) => { // adding call Logs    
+    let { callLogData } = req.body
+    try {
+        insertOneClient('callLogs', Array.isArray(callLogData) ? callLogData : [callLogData]).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/calllogs/find', async (req, res) => { // findind the particular call Logs    
+    let { client_id } = req.query
+    try {
+        getParticularclient('callLogs', `${client_id}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+// mail Logs
+app.use('/client/maillogs', async (req, res) => { // adding mail Logs  
+    let { mailLogData } = req.body
+    try {
+        insertOneClient('mailLog', Array.isArray(mailLogData) ? mailLogData : [mailLogData]).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/emailLogs/find', async (req, res) => { // findind the particular mail Logs    
+    let { client_id } = req.query
+    try {
+        getParticularclient('mailLog', `${client_id}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
 
 // this all are meeting intergration code
 // this code for getting the access token
