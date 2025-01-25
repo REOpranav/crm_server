@@ -136,9 +136,9 @@ app.use('/mongoDB/accounts', async (req, res) => { // get all account data
 })
 
 app.use('/mongoDB/insertAccount', async (req, res) => { // insert one account data
-    const { indertingData } = req.body
+    const { accountData } = req.body
     try {
-        insertOneClient('accounts', indertingData).then((value) => {
+        insertOneClient('accounts', Array.isArray(accountData) ? accountData : [accountData]).then((value) => {
             res.json(value)
         })
     } catch (error) {
@@ -153,6 +153,50 @@ app.use('/account/find', async (req, res) => { // finding particular account
     let { client_ID } = req.query
     try {
         getParticularclient('accounts', `${client_ID}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/account/delete', async (req, res) => { // delete particualar contact delete
+    let { id } = req.body
+    try {
+        deleteClient('accounts', `${id}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+// deal module
+app.use('/mongoDB/deal', async (req, res) => { // get all deal data
+    try {
+        getDataFromDB('deals').then((value) => {
+            console.log(value);
+
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+app.use('/mongoDB/insertDeal', async (req, res) => { // insert one deal
+    const { indertingData } = req.body
+    try {
+        insertOneClient('contacts', Array.isArray(indertingData) ? indertingData : [indertingData]).then((value) => {
             res.json(value)
         })
     } catch (error) {
