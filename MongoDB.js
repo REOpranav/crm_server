@@ -64,4 +64,19 @@ const deleteClient = async (collectionName, clientID) => { // delete data from l
     }
 };
 
-module.exports = { getDataFromDB, getParticularclient, deleteClient, insertOneClient }
+const updateClient = async (collectionName, clientID, updatedContent) => { // update data from leads
+    try {
+        const getDatabaseCollection = await connectToDB()
+        const collection = getDatabaseCollection?.collection(collectionName)
+        const data = await collection?.replaceOne(
+            { "id": `${clientID}` },
+            updatedContent
+        )
+        return data
+    } catch (err) {
+        console.error('Error retrieving data:', err);
+        throw err;
+    }
+};
+
+module.exports = { getDataFromDB, getParticularclient, deleteClient, insertOneClient, updateClient }

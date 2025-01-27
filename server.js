@@ -1,4 +1,4 @@
-const { getDataFromDB, getParticularclient, deleteClient, insertOneClient } = require('./MongoDB')
+const { getDataFromDB, getParticularclient, deleteClient, insertOneClient ,updateClient} = require('./MongoDB')
 const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
@@ -111,6 +111,21 @@ app.use('/contact/delete', async (req, res) => { // delete particualar contact d
     let { id } = req.body
     try {
         deleteClient('contacts', `${id}`).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+// update the client
+app.use('/mongoDB/updateClient', async (req, res) => { // update the particular client
+    let { id, updatedContent, collectionName } = req.body
+    try {
+        updateClient(`${collectionName}`, `${id}` , updatedContent).then((value) => {
             res.json(value)
         })
     } catch (error) {
