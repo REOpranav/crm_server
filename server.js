@@ -422,7 +422,6 @@ app.post('/api/mailAccountToken', async (req, res) => {  //  this code for get t
             {
                 headers: {
                     "Accept": "application/json",
-                    "Accept": "application/json",
                     "Authorization": `Zoho-oauthtoken ${await getZOHOmailAccessToken?.data?.access_token}`
                 }
             })
@@ -449,8 +448,6 @@ app.post('/api/mailAccountToken', async (req, res) => {  //  this code for get t
             getTokensAndFolderDetail: getTokensAndFolderDetail,
             meetingUserDetail: meetingUserDetail
         }
-        console.log(allMailResponce);
-
         res.json(allMailResponce)
         return
     } catch (error) {
