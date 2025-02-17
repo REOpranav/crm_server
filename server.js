@@ -4,6 +4,7 @@ const axios = require('axios')
 const cors = require('cors')
 const app = express()
 const qs = require('qs')
+const { GoogleGenerativeAI } = require('@google/generative-ai')
 require('dotenv').config()
 
 app.use(express.json()) // Parse incoming JSON
@@ -668,6 +669,44 @@ app.post('/api/mailDataIndividualReply', async (req, res) => {
         res.json(data)
     } catch (error) {
         res.status(500).json({ message: "Failed to send Mail", error: error.message });
+    }
+})
+
+app.post('/api/geminiAiResponce', async (req, res) => {
+    try {
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_TEXTENHANCER_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Enhance the mood of the statemnt or as per the emoj mood without adding any emoj and not show any option.The statement is "${req.body.feedingValue}"`;
+        // const prompt = `trasulate this to telugu and sent the statment only and use google trasulate for transulation.The statement is "${req.body.feedingValue}"`; // vinod reqiurement
+        const result = await model.generateContent(prompt);
+        return res.json(result.response.text())
+    } catch (err) {
+        return res.json(err.message)
+
+    }
+})
+
+app.post('/api/geminiAiTrasulator', async (req, res) => {
+    try {
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_TEXTENHANCER_KEY)
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+        let valueOfLoop = req?.body?.trasulationCount
+
+        let totalResonce = {};
+        const translations = await Promise.all(
+            valueOfLoop.map(async (value) => {
+                const prompt = `Translate this to ${value} and send the statement only ,without "\n". Use Google Translate for translation. The statement is: "${req.body.feedingValue}"`;
+                const result = await model?.generateContent(prompt);
+                if (!result) {
+                    throw new Error('Model Failed....☹');
+                }
+                return { [value]: await result.response.text() };
+            })
+        );
+        translations.forEach((translation) => Object.assign(totalResonce, translation));
+        return res.json(totalResonce)
+    } catch (err) {
+        return res.json(err.message)
     }
 })
 
