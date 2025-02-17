@@ -705,7 +705,7 @@ app.post('/api/geminiAiTrasulator', async (req, res) => {
         );
         translations.forEach((translation) => Object.assign(totalResonce, translation));
         return res.json(totalResonce)
-    } catch (err) {
+    } catch (err) { 
         return res.json(err.message)
     }
 })
