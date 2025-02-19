@@ -695,7 +695,7 @@ app.post('/api/geminiAiTrasulator', async (req, res) => {
         let totalResonce = {};
         const translations = await Promise.all(
             valueOfLoop.map(async (value) => {
-                const prompt = `Translate this to ${value} and send the statement only ,without "\n". Use Google Translate for translation. The statement is: "${req.body.feedingValue}"`;
+                const prompt = `Translate this to ${value} .give the responce in this language only and send the statement only ,without "\n". Use Google Translate for translation. The statement is: "${req.body.feedingValue}"`;
                 const result = await model?.generateContent(prompt);
                 if (!result) {
                     throw new Error('Model Failed....☹');
@@ -705,7 +705,7 @@ app.post('/api/geminiAiTrasulator', async (req, res) => {
         );
         translations.forEach((translation) => Object.assign(totalResonce, translation));
         return res.json(totalResonce)
-    } catch (err) { 
+    } catch (err) {
         return res.json(err.message)
     }
 })
