@@ -641,7 +641,7 @@ app.post('/api/mailDataIndividual', async (req, res) => {
 app.post('/api/mailDataIndividualReply', async (req, res) => {
     const session = req.body // this is session credencial
     const { extras } = req.query  // this is for get the extra information like zsoid and access token 
-
+ 
     try {
         const response = await fetch(
             `https://mail.zoho.${extras?.location}/api/accounts/${extras?.accountId}/messages/${extras?.messageId}`,
