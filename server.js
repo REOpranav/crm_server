@@ -641,7 +641,6 @@ app.post('/api/mailDataIndividual', async (req, res) => {
 app.post('/api/mailDataIndividualReply', async (req, res) => {
     const session = req.body // this is session credencial
     const { extras } = req.query  // this is for get the extra information like zsoid and access token 
- 
     try {
         const response = await fetch(
             `https://mail.zoho.${extras?.location}/api/accounts/${extras?.accountId}/messages/${extras?.messageId}`,
@@ -703,6 +702,37 @@ app.post('/api/geminiAiTrasulator', async (req, res) => {
         return res.json(err.message)
     }
 })
+
+app.use('/api/toneChanger/feedback', async (req, res) => {
+    const feedbackValue = req.body
+    feedbackValue['id'] = Math.floor(Math.random() * 100000)
+
+    try {
+        insertOneClient('toneChangerFeedback', Array.isArray(feedbackValue) ? feedbackValue : [feedbackValue]).then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
+// getting the tone changer application feed back - module
+app.use('/toneChanger/fecthFeedback', (req, res) => { // fetch all feedback
+    try {
+        getDataFromDB('toneChangerFeedback').then((value) => {
+            res.json(value)
+        })
+    } catch (error) {
+        res.status(error.response ? error.response.status : 500).json({
+            message: error.message,
+            error: error.response ? error.response.data : null
+        });
+    }
+})
+
 
 // running the node in 3002 port
 const PORT = 3002
